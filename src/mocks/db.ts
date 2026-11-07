@@ -19,6 +19,7 @@ export interface EventoDb {
   cupo: number
   ubicacionId: number
   activo: boolean
+  imagenes: string[]
 }
 
 export interface InscripcionDb {
@@ -45,7 +46,7 @@ export function ahora(): Date {
   return relojFijo ?? new Date()
 }
 
-function imagen(semilla: string): string {
+export function imagen(semilla: string): string {
   return `https://picsum.photos/seed/aforo-${semilla}/800/500`
 }
 
@@ -85,6 +86,7 @@ function sembrar(hoy: Date): Db {
     cupo,
     ubicacionId,
     activo,
+    imagenes: [],
   })
   const inscripcion = (id: number, usuarioId: number, eventoId: number, estado: EstadoInscripcion = 'CONFIRMADA'): InscripcionDb => ({
     id,

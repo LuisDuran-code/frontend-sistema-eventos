@@ -165,6 +165,9 @@ Enlace completo con imagen 16:10, sello, título, fecha, ubicación y cupos. El 
 ### Formularios
 Eventos en Sheet lateral y ubicaciones en Dialog. Los errores del backend se pintan encima de los botones, en un bloque `role="alert"`, y el panel sigue abierto.
 
+### Imágenes
+`CampoImagenes` sube archivos desde los formularios de administración y marca la primera como principal. `GaleriaEvento` muestra el detalle: una imagen grande y miniaturas si hay más de una. Un evento sin imágenes propias usa la de su ubicación.
+
 ### Confirmación
 `ConfirmDialog` usa "Volver" como salida, y una acción con verbo concreto, como "Sí, cancelar evento".
 

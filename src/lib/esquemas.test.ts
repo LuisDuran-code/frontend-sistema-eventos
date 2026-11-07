@@ -66,17 +66,9 @@ describe('eventoSchema', () => {
 })
 
 describe('ubicacionSchema', () => {
-  const base = { nombre: 'Sala', descripcion: '', direccion: 'Calle 1', capacidad: 20, imagenPrincipal: '' }
-
-  it('acepta imagen vacía', () => {
-    expect(ubicacionSchema.safeParse(base).success).toBe(true)
-  })
+  const base = { nombre: 'Sala', descripcion: '', direccion: 'Calle 1', capacidad: 20 }
 
   it('rechaza capacidad 0', () => {
     expect(errores(ubicacionSchema.safeParse({ ...base, capacidad: 0 }))).toEqual(['capacidad'])
-  })
-
-  it('rechaza imagen http', () => {
-    expect(errores(ubicacionSchema.safeParse({ ...base, imagenPrincipal: 'http://a.b/c.png' }))).toEqual(['imagenPrincipal'])
   })
 })

@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ArrowLeft, CalendarDays, MapPin, Users } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { EstadoError } from '@/components/EstadoError'
-import { ImagenConPlaceholder } from '@/components/ImagenConPlaceholder'
 import { Sello } from '@/components/Sello'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -13,6 +12,7 @@ import { useMisInscripcionesActivas } from '@/hooks/useInscripciones'
 import { useUbicacion } from '@/hooks/useUbicaciones'
 import { formatoHorario } from '@/lib/fechas'
 import { admiteInscripcion, selloDeEvento } from '@/lib/reglas'
+import { GaleriaEvento } from './GaleriaEvento'
 
 export function EventoDetallePage() {
   const id = Number(useParams().id)
@@ -42,6 +42,9 @@ export function EventoDetallePage() {
   const n = e.cuposDisponibles
   const restantes = n === 0 ? 'Sin cupos' : n === 1 ? 'Queda 1 cupo' : `Quedan ${n} cupos`
 
+  const principalUbicacion = ubicacion.data?.imagenPrincipal
+  const imagenes = e.imagenes.length > 0 ? e.imagenes : principalUbicacion ? [principalUbicacion] : []
+
   return (
     <>
       <Link to="/eventos" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold hover:underline">
@@ -49,10 +52,9 @@ export function EventoDetallePage() {
         Volver a eventos
       </Link>
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-        <div className="relative">
-          <ImagenConPlaceholder src={ubicacion.data?.imagenPrincipal} alt={`Imagen de ${e.ubicacion.nombre}`} className="aspect-[16/10] w-full rounded-xl" />
+        <GaleriaEvento imagenes={imagenes} alt={`Imagen de ${e.nombre}`}>
           {sello && <Sello estado={sello} animar={cuposAlConfirmar !== null} className="absolute bottom-4 right-4" />}
-        </div>
+        </GaleriaEvento>
         <div className="space-y-5">
           <h1 className="text-4xl font-extrabold tracking-tight">{e.nombre}</h1>
           <ul className="space-y-2">

@@ -85,11 +85,24 @@ describe('formulario de ubicación', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
-  it('exige que la imagen sea https', async () => {
+  it('guarda la primera imagen como principal y las demás en la galería', async () => {
+    ubicacion(2).imagenPrincipal = 'https://a'
+    ubicacion(2).imagenes = ['https://b']
     await editar('Sala Norte')
-    await escribir('Imagen principal (URL)', 'http://inseguro.test/a.jpg')
+    await userEvent.click(screen.getByRole('button', { name: 'Usar imagen 2 como principal' }))
     await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
-    expect(await screen.findByText('Debe ser una URL https')).toBeInTheDocument()
+    await waitFor(() => expect(ubicacion(2).imagenPrincipal).toBe('https://b'))
+    expect(ubicacion(2).imagenes).toEqual(['https://a'])
+  })
+
+  it('sube una imagen nueva', async () => {
+    ubicacion(2).imagenPrincipal = null
+    ubicacion(2).imagenes = []
+    await editar('Sala Norte')
+    await userEvent.upload(screen.getByLabelText('Imágenes de la ubicación'), new File([new Uint8Array(10)], 'a.png', { type: 'image/png' }))
+    await screen.findByRole('img', { name: 'Imagen 1' })
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+    await waitFor(() => expect(ubicacion(2).imagenPrincipal).toMatch(/^https:\/\//))
   })
 
   it('al editar conserva la galería', async () => {

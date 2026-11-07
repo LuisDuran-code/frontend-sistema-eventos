@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { CampoImagenes } from '@/components/CampoImagenes'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -27,6 +28,8 @@ function Formulario({ ubicacion, onCerrar }: { ubicacion?: Ubicacion; onCerrar: 
   const cambiarActiva = useCambiarActivaUbicacion()
   const [activa, setActiva] = useState(ubicacion?.activo ?? true)
   const enviando = useRef(false)
+  const [imagenes, setImagenes] = useState(() => [...(ubicacion?.imagenPrincipal ? [ubicacion.imagenPrincipal] : []), ...(ubicacion?.imagenes ?? [])])
+  const [subiendo, setSubiendo] = useState(false)
 
   const form = useForm<UbicacionValues>({
     resolver: zodResolver(ubicacionSchema),
@@ -35,7 +38,6 @@ function Formulario({ ubicacion, onCerrar }: { ubicacion?: Ubicacion; onCerrar: 
       descripcion: ubicacion?.descripcion ?? '',
       direccion: ubicacion?.direccion ?? '',
       capacidad: (ubicacion?.capacidad ?? '') as number,
-      imagenPrincipal: ubicacion?.imagenPrincipal ?? '',
     },
   })
 
@@ -52,8 +54,8 @@ function Formulario({ ubicacion, onCerrar }: { ubicacion?: Ubicacion; onCerrar: 
       descripcion: v.descripcion || undefined,
       direccion: v.direccion,
       capacidad: v.capacidad,
-      imagenPrincipal: v.imagenPrincipal || undefined,
-      imagenes: ubicacion?.imagenes ?? [],
+      imagenPrincipal: imagenes[0],
+      imagenes: imagenes.slice(1),
     }
     try {
       await guardar.mutateAsync({ id: ubicacion?.id, input })
@@ -142,19 +144,7 @@ function Formulario({ ubicacion, onCerrar }: { ubicacion?: Ubicacion; onCerrar: 
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="imagenPrincipal"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Imagen principal (URL)</FormLabel>
-              <FormControl>
-                <Input type="url" maxLength={500} placeholder="https://" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <CampoImagenes etiqueta="Imágenes de la ubicación" imagenes={imagenes} onChange={setImagenes} maximo={10} onSubiendoChange={setSubiendo} />
         {ubicacion && (
           <div className="flex items-center justify-between gap-4 rounded-md border px-3 py-2">
             <Label htmlFor="ubicacion-activa">Ubicación activa</Label>
@@ -170,7 +160,7 @@ function Formulario({ ubicacion, onCerrar }: { ubicacion?: Ubicacion; onCerrar: 
           <Button type="button" variant="outline" disabled={isSubmitting} onClick={onCerrar}>
             Volver
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || subiendo}>
             {ubicacion ? 'Guardar cambios' : 'Crear ubicación'}
           </Button>
         </div>

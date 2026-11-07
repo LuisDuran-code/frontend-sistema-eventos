@@ -11,10 +11,15 @@ export interface FiltrosEventos {
   size?: number
 }
 
-export const listarEventos = (f: FiltrosEventos = {}) =>
-  api.get<Page<Evento>>('/eventos', { ...f, size: f.size ?? 12, sort: 'fecha,asc' })
+// Vercel y Railway no despliegan a la vez: la API puede ir por detrás y no enviar `imagenes`.
+const conImagenes = (e: Evento): Evento => ({ ...e, imagenes: e.imagenes ?? [] })
 
-export const obtenerEvento = (id: number) => api.get<Evento>(`/eventos/${id}`)
+export const listarEventos = async (f: FiltrosEventos = {}) => {
+  const pagina = await api.get<Page<Evento>>('/eventos', { ...f, size: f.size ?? 12, sort: 'fecha,asc' })
+  return { ...pagina, content: pagina.content.map(conImagenes) }
+}
+
+export const obtenerEvento = async (id: number) => conImagenes(await api.get<Evento>(`/eventos/${id}`))
 
 export const crearEvento = (input: EventoInput) => api.post<Evento>('/eventos', input)
 

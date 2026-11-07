@@ -62,6 +62,7 @@ export interface Evento {
   cuposDisponibles: number
   estado: EstadoEvento
   ubicacion: UbicacionResumen
+  imagenes: string[]
 }
 
 export interface EventoInput {
@@ -72,6 +73,7 @@ export interface EventoInput {
   horaFin: string
   cupo: number
   ubicacionId: number
+  imagenes: string[]
 }
 
 export interface EventoResumen {
