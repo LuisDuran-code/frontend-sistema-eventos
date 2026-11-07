@@ -6,6 +6,7 @@ import { AsistentesPage } from '@/features/asistentes/AsistentesPage'
 import { ApiCaidaPage } from '@/features/auth/ApiCaidaPage'
 import { useAuth } from '@/features/auth/AuthContext'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { RegistroPage } from '@/features/auth/RegistroPage'
 import { AdminEventosPage } from '@/features/eventos/AdminEventosPage'
 import { EventoDetallePage } from '@/features/eventos/EventoDetallePage'
 import { EventosPage } from '@/features/eventos/EventosPage'
@@ -30,6 +31,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/registro" element={<RegistroPage />} />
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route index element={<RedirigirInicio />} />

@@ -203,6 +203,17 @@ export const handlers = [
     }),
   ),
   http.post(
+    url('/auth/registro'),
+    ruta(async ({ request }) => {
+      const { nombre, email, password } = (await request.json()) as { nombre: string; email: string; password: string }
+      const db = obtenerDb()
+      if (db.usuarios.some((u) => u.email === email)) fallar(409, 'El email ya está registrado')
+      const usuario = { id: Math.max(...db.usuarios.map((u) => u.id)) + 1, nombre, email, password, rol: 'VISITANTE' as const }
+      db.usuarios.push(usuario)
+      return HttpResponse.json(aPublico(usuario), { status: 201 })
+    }),
+  ),
+  http.post(
     url('/auth/logout'),
     ruta(() => {
       obtenerDb().sesion = null

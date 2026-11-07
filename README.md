@@ -46,7 +46,7 @@ La barra incluye **Simular error**, que hace fallar la siguiente inscripción pa
 
 ## Usuarios en la API real
 
-- **Visitantes:** se crean con `POST /api/auth/registro`, enviando `nombre`, `email` y `password` (mínimo 8 caracteres). La app no tiene pantalla de registro.
+- **Visitantes:** se crean con `POST /api/auth/registro`, enviando `nombre`, `email` y `password` (mínimo 8 caracteres), o desde la pantalla `/registro`. Toda cuenta nueva es de visitante.
 - **Administrador inicial:** se define con las variables `ADMIN_EMAIL` y `ADMIN_PASSWORD` del backend antes de arrancarlo.
 
 ## Variables de entorno
@@ -62,6 +62,7 @@ La barra incluye **Simular error**, que hace fallar la siguiente inscripción pa
 | Ruta | Quién entra | Qué hace |
 | --- | --- | --- |
 | `/login` | Todos | Inicio de sesión |
+| `/registro` | Todos | Crear una cuenta de visitante |
 | `/eventos` | Sesión iniciada | Cartelera con búsqueda y filtros |
 | `/eventos/:id` | Sesión iniciada | Detalle, inscripción o acceso a asistentes |
 | `/mis-inscripciones` | Visitante | Inscripciones activas y canceladas |

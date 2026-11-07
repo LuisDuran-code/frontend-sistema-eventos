@@ -9,6 +9,13 @@ export const loginSchema = z.object({
 })
 export type LoginValues = z.infer<typeof loginSchema>
 
+export const registroSchema = z.object({
+  nombre: z.string().trim().min(1, 'Escribe tu nombre').max(100, 'Máximo 100 caracteres'),
+  email: z.string().trim().email('Escribe un correo válido').max(100, 'Máximo 100 caracteres'),
+  password: z.string().min(8, 'Mínimo 8 caracteres').max(72, 'Máximo 72 caracteres'),
+})
+export type RegistroValues = z.infer<typeof registroSchema>
+
 const entero = (minimo: string) =>
   z.coerce.number({ invalid_type_error: 'Escribe un número' }).int('Debe ser un número entero').min(1, minimo)
 
