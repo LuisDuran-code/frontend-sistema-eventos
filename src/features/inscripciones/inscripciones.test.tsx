@@ -73,7 +73,7 @@ describe('inscribirse', () => {
   })
 
   it('anima el número de cupos solo cuando cambia, no sobre el dato viejo', async () => {
-    let retener: Promise<void> | undefined
+    let retener = Promise.resolve()
     let soltar = () => {}
     server.use(
       http.get(`*/api/eventos/${FORO}`, async () => {

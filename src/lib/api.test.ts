@@ -51,6 +51,16 @@ describe('peticiones', () => {
     expect(fetchMock.mock.calls[0][0]).toBe('/api/eventos?page=0')
   })
 
+  it('aplana la página que serializa Spring', async () => {
+    responder(200, { content: [{ id: 1 }], page: { size: 10, number: 2, totalElements: 21, totalPages: 3 } })
+    await expect(api.get('/eventos')).resolves.toEqual({ content: [{ id: 1 }], size: 10, number: 2, totalElements: 21, totalPages: 3 })
+  })
+
+  it('no toca un objeto que solo tiene un campo page', async () => {
+    responder(200, { page: 3 })
+    await expect(api.get('/algo')).resolves.toEqual({ page: 3 })
+  })
+
   it('resuelve undefined con un 204', async () => {
     responder(204)
     await expect(api.del('/eventos/1')).resolves.toBeUndefined()
@@ -91,6 +101,24 @@ describe('errores', () => {
     const e = await api.get('/eventos').catch((x) => x)
     expect(e.status).toBe(500)
     expect(esApiCaida(e)).toBe(false)
+  })
+
+  it('no muestra el detalle técnico de un 500', async () => {
+    responder(500, { message: 'could not execute statement [ERROR: relation]' })
+    await expect(api.get('/x')).rejects.toMatchObject({ status: 500, message: '' })
+  })
+
+  it.each(["Validation failed for object='eventoRequestDto'. Error count: 1", 'JSON parse error: Unexpected token'])(
+    'no muestra el texto de Spring en un 400: %s',
+    async (message) => {
+      responder(400, { message })
+      await expect(api.post('/x', {})).rejects.toMatchObject({ status: 400, message: '' })
+    },
+  )
+
+  it('conserva el mensaje de negocio de un 400', async () => {
+    responder(400, { message: 'La hora de fin debe ser posterior a la de inicio' })
+    await expect(api.post('/x', {})).rejects.toMatchObject({ status: 400, message: 'La hora de fin debe ser posterior a la de inicio' })
   })
 
   it('un 502 da status 0', async () => {

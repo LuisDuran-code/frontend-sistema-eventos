@@ -1,7 +1,7 @@
 import { format, startOfDay } from 'date-fns'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { aFechaLocal } from '@/lib/fechas'
-import type { Evento, EventoInput, EventoResumen, Page, UbicacionInput } from '@/types'
+import type { Evento, EventoInput, EventoResumen, UbicacionInput } from '@/types'
 import { ahora, guardarDb, obtenerDb, type EventoDb, type InscripcionDb, type UsuarioDb } from './db'
 import { consumirError } from './simulador'
 
@@ -58,15 +58,12 @@ function aPublico({ id, nombre, email, rol }: UsuarioDb) {
   return { id, nombre, email, rol }
 }
 
-function paginar<T>(lista: T[], url: URL, sizeBase = 10): Page<T> {
+function paginar<T>(lista: T[], url: URL, sizeBase = 10) {
   const number = Number(url.searchParams.get('page') ?? 0)
   const size = Math.min(Number(url.searchParams.get('size') ?? sizeBase), 50)
   return {
     content: lista.slice(number * size, (number + 1) * size),
-    totalElements: lista.length,
-    totalPages: Math.ceil(lista.length / size),
-    number,
-    size,
+    page: { size, number, totalElements: lista.length, totalPages: Math.ceil(lista.length / size) },
   }
 }
 
