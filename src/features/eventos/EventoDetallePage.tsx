@@ -7,6 +7,7 @@ import { Sello } from '@/components/Sello'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
+import { AccionesEvento } from '@/features/inscripciones/AccionesEvento'
 import { useEvento } from '@/hooks/useEventos'
 import { useMisInscripcionesActivas } from '@/hooks/useInscripciones'
 import { useUbicacion } from '@/hooks/useUbicaciones'
@@ -19,7 +20,7 @@ export function EventoDetallePage() {
   const evento = useEvento(id)
   const ubicacion = useUbicacion(evento.data?.ubicacion.id)
   const { porEvento } = useMisInscripcionesActivas(sesion?.rol === 'VISITANTE')
-  const [recienInscrito] = useState(false)
+  const [recienInscrito, setRecienInscrito] = useState(false)
 
   if (evento.isPending) {
     return (
@@ -78,6 +79,7 @@ export function EventoDetallePage() {
             </div>
             <Progress value={porcentaje} aria-label="Cupos ocupados" />
           </div>
+          <AccionesEvento evento={e} inscrito={Boolean(inscripcion)} onInscrito={() => setRecienInscrito(true)} />
           {e.descripcion && <p className="max-w-prose whitespace-pre-line">{e.descripcion}</p>}
         </div>
       </div>

@@ -7,6 +7,7 @@ import { useAuth } from '@/features/auth/AuthContext'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { EventoDetallePage } from '@/features/eventos/EventoDetallePage'
 import { EventosPage } from '@/features/eventos/EventosPage'
+import { MisInscripcionesPage } from '@/features/inscripciones/MisInscripcionesPage'
 import { NotFoundPage } from '@/features/NotFoundPage'
 import { RedirigirInicio, RequireAuth, RequireRole } from './guards'
 
@@ -35,7 +36,7 @@ export function AppRoutes() {
           <Route path="eventos" element={<EventosPage />} />
           <Route path="eventos/:id" element={<EventoDetallePage />} />
           <Route element={<RequireRole role="VISITANTE" />}>
-            <Route path="mis-inscripciones" element={<Pendiente titulo="Mis inscripciones" />} />
+            <Route path="mis-inscripciones" element={<MisInscripcionesPage />} />
           </Route>
           <Route element={<RequireRole role="ADMIN" />}>
             <Route path="admin" element={<AdminLayout />}>
