@@ -124,4 +124,41 @@ describe('asistentes', () => {
     renderApp('/admin/eventos/999/asistentes')
     expect(await screen.findByText('Evento no encontrado')).toBeInTheDocument()
   })
+
+  it('al retirar a la única persona de la página vuelve a la anterior', async () => {
+    const db = obtenerDb()
+    for (let n = 0; n < 11; n++) {
+      db.usuarios.push({ id: 100 + n, nombre: `Persona ${n}`, email: `p${n}@aforo.test`, password: 'x', rol: 'VISITANTE' })
+      db.inscripciones.push({ id: 200 + n, usuarioId: 100 + n, eventoId: 3, estado: 'CONFIRMADA', fechaInscripcion: '2026-11-05T09:30:00' })
+    }
+    await abrir(3)
+    await screen.findByText('Persona 0')
+    await userEvent.click(screen.getByRole('button', { name: /Siguiente/ }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Retirar a Persona 10' }))
+    await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Sí, retirar' }))
+    expect(await screen.findByText('Persona 0')).toBeInTheDocument()
+    expect(screen.queryByText('Todavía no hay asistentes')).not.toBeInTheDocument()
+  })
+
+  it('el selector ve a todas las personas aunque superen una página', async () => {
+    const db = obtenerDb()
+    for (let n = 0; n < 70; n++) {
+      db.usuarios.push({ id: 100 + n, nombre: `Persona ${n}`, email: `p${n}@aforo.test`, password: 'x', rol: 'VISITANTE' })
+      if (n < 60) db.inscripciones.push({ id: 300 + n, usuarioId: 100 + n, eventoId: 3, estado: 'CONFIRMADA', fechaInscripcion: '2026-11-05T09:30:00' })
+    }
+    await abrir(3)
+    await screen.findByText('Persona 0')
+    const dialogo = await abrirDialogo()
+    expect(await within(dialogo).findByRole('option', { name: /Persona 65/ })).toBeInTheDocument()
+    expect(within(dialogo).queryByRole('option', { name: /Persona 55/ })).not.toBeInTheDocument()
+  })
+
+  it('si no carga la lista de personas lo dice en vez de fingir que nadie coincide', async () => {
+    server.use(http.get('*/api/usuarios', () => HttpResponse.json({ status: 500 }, { status: 500 })))
+    await abrir(1)
+    await screen.findByText('Marta Rivas')
+    const dialogo = await abrirDialogo()
+    expect(await within(dialogo).findByRole('button', { name: 'Reintentar' })).toBeInTheDocument()
+    expect(within(dialogo).queryByText('Nadie coincide con la búsqueda')).not.toBeInTheDocument()
+  })
 })

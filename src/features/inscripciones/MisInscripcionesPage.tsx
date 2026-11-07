@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { CalendarCheck, CalendarOff } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
+import { BotonConMotivo } from '@/components/BotonConMotivo'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { EstadoError } from '@/components/EstadoError'
 import { EstadoVacio } from '@/components/EstadoVacio'
@@ -13,9 +14,17 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCancelarInscripcion, useMias } from '@/hooks/useInscripciones'
+import { usePaginaValida } from '@/hooks/usePaginaValida'
 import { mensajeError } from '@/lib/api'
 import { formatoHorario } from '@/lib/fechas'
-import type { EstadoInscripcion, Inscripcion } from '@/types'
+import { haComenzado, haTerminado } from '@/lib/reglas'
+import type { EstadoInscripcion, EventoResumen, Inscripcion } from '@/types'
+
+// Tras comenzar no se puede volver a inscribir, así que cancelar no tendría vuelta atrás.
+function motivoSinCancelar(e: EventoResumen, ahora: Date): string | null {
+  if (haTerminado(e, ahora)) return 'El evento ya terminó'
+  return haComenzado(e, ahora) ? 'El evento ya comenzó' : null
+}
 
 function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
   const [page, setPage] = useState(0)
@@ -24,6 +33,7 @@ function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
   const cancelar = useCancelarInscripcion()
   const enviando = useRef(false)
   const activas = estado === 'CONFIRMADA'
+  const reubicando = usePaginaValida(consulta.data, page, setPage)
 
   function confirmar() {
     if (!porCancelar || enviando.current) return
@@ -38,7 +48,7 @@ function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
     })
   }
 
-  if (consulta.isPending) {
+  if (consulta.isPending || reubicando) {
     return (
       <div aria-label="Cargando inscripciones" className="space-y-3">
         <Skeleton className="h-12" />
@@ -89,13 +99,15 @@ function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
                 <TableCell className={CELDA_APILADA}>{formatoHorario(i.evento)}</TableCell>
                 <TableCell className={CELDA_APILADA}>{i.evento.ubicacionNombre}</TableCell>
                 <TableCell className={CELDA_APILADA}>
-                  <Sello plano estado={activas ? 'Inscrito' : 'Cancelada'} />
+                  <Sello plano estado={!activas ? 'Cancelada' : haTerminado(i.evento, new Date()) ? 'Finalizado' : 'Inscrito'} />
                 </TableCell>
                 {activas && (
                   <TableCell className={`${CELDA_APILADA} md:text-right`}>
-                    <Button variant="outline" size="sm" onClick={() => setPorCancelar(i)}>
-                      Cancelar asistencia
-                    </Button>
+                    <div className="inline-block">
+                      <BotonConMotivo variant="outline" size="sm" motivo={motivoSinCancelar(i.evento, new Date())} onClick={() => setPorCancelar(i)}>
+                        Cancelar asistencia
+                      </BotonConMotivo>
+                    </div>
                   </TableCell>
                 )}
               </TableRow>

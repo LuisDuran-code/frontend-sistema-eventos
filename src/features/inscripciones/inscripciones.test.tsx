@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { obtenerDb } from '@/mocks/db'
 import { server } from '@/mocks/server'
 import { simularError } from '@/mocks/simulador'
 import { entrarComo, renderApp, usarServidor } from '@/test/app'
@@ -113,5 +114,43 @@ describe('mis inscripciones', () => {
     await userEvent.click(screen.getByRole('tab', { name: 'Canceladas' }))
     expect(await screen.findByRole('link', { name: 'Taller de cerámica' })).toBeInTheDocument()
     server.events.removeAllListeners()
+  })
+})
+
+describe('asistencia en eventos ya comenzados', () => {
+  it('en un evento terminado no ofrece cancelar y dice por qué', async () => {
+    entrarComo('VISITANTE')
+    renderApp('/mis-inscripciones')
+    const fila = (await screen.findByText('Charla de astronomía')).closest('tr')!
+    expect(within(fila).getByRole('button', { name: 'Cancelar asistencia' })).toBeDisabled()
+    expect(within(fila).getByText('El evento ya terminó')).toBeInTheDocument()
+    expect(within(fila).getByText('Finalizado')).toBeInTheDocument()
+  })
+
+  it('en un evento en curso no ofrece cancelar y dice por qué', async () => {
+    obtenerDb().inscripciones.push({ id: 50, usuarioId: 2, eventoId: 7, estado: 'CONFIRMADA', fechaInscripcion: '2026-11-05T09:30:00' })
+    entrarComo('VISITANTE')
+    renderApp('/mis-inscripciones')
+    const fila = (await screen.findByText('Mercado de artesanos')).closest('tr')!
+    expect(within(fila).getByRole('button', { name: 'Cancelar asistencia' })).toBeDisabled()
+    expect(within(fila).getByText('El evento ya comenzó')).toBeInTheDocument()
+  })
+})
+
+describe('paginación al quedar vacía', () => {
+  it('vuelve a la última página con filas al cancelar la única de la página', async () => {
+    const db = obtenerDb()
+    ;[2, 3, 4, 6, 10, 11, 12, 13, 14].forEach((eventoId, i) =>
+      db.inscripciones.push({ id: 100 + i, usuarioId: 2, eventoId, estado: 'CONFIRMADA', fechaInscripcion: '2026-11-05T09:30:00' }),
+    )
+    entrarComo('VISITANTE')
+    renderApp('/mis-inscripciones')
+    await screen.findByText('Taller de cerámica')
+    await userEvent.click(screen.getByRole('button', { name: /Siguiente/ }))
+    const fila = (await screen.findByText('Muestra de teatro escolar')).closest('tr')!
+    await userEvent.click(within(fila).getByRole('button', { name: 'Cancelar asistencia' }))
+    await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Sí, cancelar' }))
+    expect(await screen.findByText('Taller de cerámica')).toBeInTheDocument()
+    expect(screen.queryByText('No tienes inscripciones activas')).not.toBeInTheDocument()
   })
 })

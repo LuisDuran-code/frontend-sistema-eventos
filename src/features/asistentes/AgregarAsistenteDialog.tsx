@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react'
 import { Check } from 'lucide-react'
 import { toast } from 'sonner'
+import { EstadoError } from '@/components/EstadoError'
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { mensajeInscripcion } from '@/features/inscripciones/mensajes'
-import { useAgregarInscrito, useInscritos } from '@/hooks/useEventos'
+import { useAgregarInscrito, useTodosLosInscritos } from '@/hooks/useEventos'
 import { useUsuariosVisitantes } from '@/hooks/useUsuarios'
 import type { Evento } from '@/types'
 
@@ -17,12 +18,12 @@ interface AgregarAsistenteDialogProps {
 
 function Selector({ evento, onCerrar }: { evento: Evento; onCerrar: () => void }) {
   const usuarios = useUsuariosVisitantes()
-  const inscritos = useInscritos(evento.id, 0, 200)
+  const inscritos = useTodosLosInscritos(evento.id)
   const agregar = useAgregarInscrito(evento.id)
   const [elegido, setElegido] = useState<number | null>(null)
   const enviando = useRef(false)
 
-  const yaInscritos = new Set(inscritos.data?.content.map((i) => i.usuarioId))
+  const yaInscritos = new Set(inscritos.data?.map((i) => i.usuarioId))
   const disponibles = (usuarios.data ?? []).filter((u) => !yaInscritos.has(u.id))
   const cargando = usuarios.isPending || inscritos.isPending
 
@@ -39,6 +40,19 @@ function Selector({ evento, onCerrar }: { evento: Evento; onCerrar: () => void }
         enviando.current = false
       },
     })
+  }
+
+  const fallo = usuarios.error ?? inscritos.error
+  if (fallo) {
+    return (
+      <EstadoError
+        error={fallo}
+        onRetry={() => {
+          usuarios.refetch()
+          inscritos.refetch()
+        }}
+      />
+    )
   }
 
   return (

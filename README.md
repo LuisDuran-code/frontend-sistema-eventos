@@ -42,7 +42,7 @@ Reinicia `npm run dev`. Los datos son sintéticos y viven en la pestaña: una ba
 | Administración | `admin@aforo.test` | `admin1234` |
 | Visitante | `visitante@aforo.test` | `visitante1234` |
 
-La barra incluye **Simular error**, que hace fallar la siguiente inscripción para ver los casos que la interfaz normalmente evita: evento no disponible, ya inscrito, evento lleno, choque de horario y error del servidor. Nada de esto entra en el build de producción.
+La barra incluye **Simular error**, que hace fallar la siguiente inscripción para ver los casos que la interfaz normalmente evita: evento no disponible, ya inscrito, evento lleno, choque de horario y error del servidor. El código del mock no entra en el build de producción; solo se copia `mockServiceWorker.js`, que queda sin registrar.
 
 ## Usuarios en la API real
 

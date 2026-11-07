@@ -64,7 +64,9 @@ describe('tabla de eventos', () => {
     const editar = await screen.findByRole('menuitem', { name: /Editar/ })
     expect(editar).toHaveAttribute('aria-disabled', 'true')
     expect(editar).toHaveTextContent('No se puede editar un evento cancelado')
-    expect(screen.getByRole('menuitem', { name: /Cancelar evento/ })).toHaveAttribute('aria-disabled', 'true')
+    const cancelar = screen.getByRole('menuitem', { name: /Cancelar evento/ })
+    expect(cancelar).toHaveAttribute('aria-disabled', 'true')
+    expect(cancelar).toHaveTextContent('Este evento ya está cancelado')
   })
 
   it('explica por qué no se edita un evento comenzado con inscritos', async () => {

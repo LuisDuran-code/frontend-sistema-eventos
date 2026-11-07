@@ -1,4 +1,5 @@
 import { api } from '@/lib/api'
+import { todasLasPaginas } from '@/lib/paginas'
 import type { Evento, EventoInput, Inscrito, Page } from '@/types'
 
 export interface FiltrosEventos {
@@ -23,6 +24,8 @@ export const cancelarEvento = (id: number) => api.del(`/eventos/${id}`)
 
 export const listarInscritos = (id: number, page = 0, size?: number) =>
   api.get<Page<Inscrito>>(`/eventos/${id}/inscritos`, { page, size })
+
+export const listarTodosLosInscritos = (id: number) => todasLasPaginas((page) => listarInscritos(id, page, 50))
 
 export const agregarInscrito = (eventoId: number, usuarioId: number) =>
   api.post<unknown>(`/eventos/${eventoId}/inscritos`, { usuarioId })

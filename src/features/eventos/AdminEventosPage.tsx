@@ -141,8 +141,9 @@ export function AdminEventosPage() {
                               <Link to={`/admin/eventos/${e.id}/asistentes`}>Gestionar asistentes</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem disabled={cancelado} className="text-destructive focus:text-destructive" onSelect={() => setPorCancelar(e)}>
+                            <DropdownMenuItem disabled={cancelado} className="flex-col items-start gap-0.5 text-destructive focus:text-destructive" onSelect={() => setPorCancelar(e)}>
                               Cancelar evento
+                              {cancelado && <span className="text-xs">Este evento ya está cancelado</span>}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

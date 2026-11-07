@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { mensajeInscripcion } from '@/features/inscripciones/mensajes'
 import { useEvento, useInscritos, useRetirarInscrito } from '@/hooks/useEventos'
+import { usePaginaValida } from '@/hooks/usePaginaValida'
 import { formatoHorario, formatoRegistro } from '@/lib/fechas'
 import { motivoBloqueo } from '@/lib/reglas'
 import type { Inscrito } from '@/types'
@@ -25,6 +26,7 @@ export function AsistentesPage() {
   const evento = useEvento(id)
   const inscritos = useInscritos(id, page)
   const retirar = useRetirarInscrito(id)
+  const reubicando = usePaginaValida(inscritos.data, page, setPage)
   const [agregando, setAgregando] = useState(false)
   const [porRetirar, setPorRetirar] = useState<Inscrito | null>(null)
   const enviando = useRef(false)
@@ -85,7 +87,7 @@ export function AsistentesPage() {
         </div>
       </div>
 
-      {inscritos.isPending ? (
+      {inscritos.isPending || reubicando ? (
         <div aria-label="Cargando asistentes" className="space-y-3">
           <Skeleton className="h-12" />
           <Skeleton className="h-12" />
