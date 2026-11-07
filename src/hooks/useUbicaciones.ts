@@ -48,6 +48,14 @@ export function useCambiarActivaUbicacion() {
   })
 }
 
+export function useEventosDeUbicacion(ubicacionId: number | undefined, habilitado: boolean) {
+  return useQuery({
+    queryKey: [...claves.eventos, 'deUbicacion', ubicacionId],
+    queryFn: async () => (await listarEventos({ ubicacionId, size: 50 })).content,
+    enabled: habilitado && ubicacionId !== undefined,
+  })
+}
+
 export function useConteoEventos(ubicacionId: number) {
   return useQuery({
     queryKey: [...claves.eventos, 'conteo', ubicacionId],

@@ -11,11 +11,9 @@ import { EventoDetallePage } from '@/features/eventos/EventoDetallePage'
 import { EventosPage } from '@/features/eventos/EventosPage'
 import { MisInscripcionesPage } from '@/features/inscripciones/MisInscripcionesPage'
 import { NotFoundPage } from '@/features/NotFoundPage'
+import { UbicacionesPage } from '@/features/ubicaciones/UbicacionesPage'
 import { RedirigirInicio, RequireAuth, RequireRole } from './guards'
 
-function Pendiente({ titulo }: { titulo: string }) {
-  return <h1 className="text-4xl font-extrabold">{titulo}</h1>
-}
 
 export function AppRoutes() {
   const { cargando, apiCaida } = useAuth()
@@ -45,7 +43,7 @@ export function AppRoutes() {
               <Route index element={<RedirigirInicio />} />
               <Route path="eventos" element={<AdminEventosPage />} />
               <Route path="eventos/:id/asistentes" element={<AsistentesPage />} />
-              <Route path="ubicaciones" element={<Pendiente titulo="Ubicaciones" />} />
+              <Route path="ubicaciones" element={<UbicacionesPage />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFoundPage />} />
