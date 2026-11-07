@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FlaskConical } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -10,6 +10,11 @@ const NINGUNO = 'NINGUNO'
 
 export function PanelSimular() {
   const [valor, setValor] = useState<string>(errorPendiente() ?? NINGUNO)
+
+  useEffect(() => {
+    document.body.classList.add('pb-14')
+    return () => document.body.classList.remove('pb-14')
+  }, [])
 
   function elegir(nuevo: string) {
     setValor(nuevo)
