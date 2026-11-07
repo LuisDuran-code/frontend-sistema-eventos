@@ -55,7 +55,8 @@ function mensajeVisible(status: number, mensaje: unknown): string {
 
 async function peticion<T>(metodo: string, path: string, opciones: { params?: Params; body?: unknown } = {}): Promise<T> {
   const headers = new Headers()
-  if (opciones.body !== undefined) headers.set('Content-Type', 'application/json')
+  const esArchivo = opciones.body instanceof FormData
+  if (opciones.body !== undefined && !esArchivo) headers.set('Content-Type', 'application/json')
   if (metodo !== 'GET') {
     const token = leerCookie('XSRF-TOKEN')
     if (token) headers.set('X-XSRF-TOKEN', token)
@@ -67,7 +68,7 @@ async function peticion<T>(metodo: string, path: string, opciones: { params?: Pa
       method: metodo,
       credentials: 'include',
       headers,
-      body: opciones.body === undefined ? undefined : JSON.stringify(opciones.body),
+      body: esArchivo ? (opciones.body as FormData) : opciones.body === undefined ? undefined : JSON.stringify(opciones.body),
     })
   } catch {
     throw new ApiError(0, '')

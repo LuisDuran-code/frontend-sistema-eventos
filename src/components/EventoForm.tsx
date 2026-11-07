@@ -1,8 +1,9 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type Resolver } from 'react-hook-form'
 import { toast } from 'sonner'
 import { CampoFecha } from '@/components/CampoFecha'
+import { CampoImagenes } from '@/components/CampoImagenes'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -29,6 +30,8 @@ function Formulario({ evento, onCerrar }: { evento?: Evento; onCerrar: () => voi
   const crear = useCrearEvento()
   const actualizar = useActualizarEvento()
   const enviando = useRef(false)
+  const [imagenes, setImagenes] = useState(evento?.imagenes ?? [])
+  const [subiendo, setSubiendo] = useState(false)
   const conInscritos = (evento?.inscritos ?? 0) > 0
 
   const form = useForm<EventoValues>({
@@ -53,7 +56,7 @@ function Formulario({ evento, onCerrar }: { evento?: Evento; onCerrar: () => voi
   async function enviar(valores: EventoValues) {
     if (enviando.current) return
     enviando.current = true
-    const input = aEventoInput(valores)
+    const input = { ...aEventoInput(valores), imagenes }
     try {
       if (evento) await actualizar.mutateAsync({ id: evento.id, input })
       else await crear.mutateAsync(input)
@@ -181,6 +184,7 @@ function Formulario({ evento, onCerrar }: { evento?: Evento; onCerrar: () => voi
             </FormItem>
           )}
         />
+        <CampoImagenes etiqueta="Imágenes del evento" imagenes={imagenes} onChange={setImagenes} maximo={10} onSubiendoChange={setSubiendo} />
         {errors.root && (
           <p role="alert" className="rounded-md border border-destructive px-3 py-2 text-sm font-semibold text-destructive">
             {errors.root.message}
@@ -190,7 +194,7 @@ function Formulario({ evento, onCerrar }: { evento?: Evento; onCerrar: () => voi
           <Button type="button" variant="outline" disabled={isSubmitting} onClick={onCerrar}>
             Volver
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || subiendo}>
             {evento ? 'Guardar cambios' : 'Crear evento'}
           </Button>
         </div>

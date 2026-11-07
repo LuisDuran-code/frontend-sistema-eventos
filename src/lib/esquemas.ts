@@ -49,7 +49,7 @@ export function eventoSchema({ capacidad, ahora, minimoCupo }: { capacidad?: num
   })
 }
 
-export function aEventoInput(v: EventoValues): EventoInput {
+export function aEventoInput(v: EventoValues): Omit<EventoInput, 'imagenes'> {
   return {
     nombre: v.nombre,
     descripcion: v.descripcion || undefined,
@@ -66,11 +66,5 @@ export const ubicacionSchema = z.object({
   descripcion: z.string().max(500, 'Máximo 500 caracteres').optional(),
   direccion: z.string().trim().min(1, 'Escribe la dirección').max(200, 'Máximo 200 caracteres'),
   capacidad: entero('Debe ser mayor que 0'),
-  imagenPrincipal: z
-    .string()
-    .max(500, 'Máximo 500 caracteres')
-    .regex(/^https:\/\/\S+$/, 'Debe ser una URL https')
-    .or(z.literal(''))
-    .optional(),
 })
 export type UbicacionValues = z.infer<typeof ubicacionSchema>

@@ -12,6 +12,7 @@ const base: Evento = {
   cupo: 30,
   inscritos: 22,
   cuposDisponibles: 8,
+  imagenes: [],
   estado: 'PROGRAMADO',
   ubicacion: { id: 1, nombre: 'Sala Norte', direccion: 'Calle 1' },
 }

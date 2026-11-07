@@ -61,6 +61,17 @@ describe('peticiones', () => {
     await expect(api.get('/algo')).resolves.toEqual({ page: 3 })
   })
 
+  it('envía un archivo sin fijar Content-Type ni convertirlo a JSON', async () => {
+    responder(201, { url: 'https://a' })
+    document.cookie = 'XSRF-TOKEN=token'
+    const cuerpo = new FormData()
+    await api.post('/imagenes', cuerpo)
+    const opciones = fetchMock.mock.calls[0][1]
+    expect(opciones.body).toBe(cuerpo)
+    expect(opciones.headers.has('Content-Type')).toBe(false)
+    expect(opciones.headers.get('X-XSRF-TOKEN')).toBe('token')
+  })
+
   it('resuelve undefined con un 204', async () => {
     responder(204)
     await expect(api.del('/eventos/1')).resolves.toBeUndefined()

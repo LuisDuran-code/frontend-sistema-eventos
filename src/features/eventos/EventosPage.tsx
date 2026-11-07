@@ -87,7 +87,7 @@ export function EventosPage() {
               <EventCard
                 key={evento.id}
                 evento={evento}
-                imagen={imagenes.get(evento.ubicacion.id)}
+                imagen={evento.imagenes[0] ?? imagenes.get(evento.ubicacion.id)}
                 sello={selloDeEvento(evento, { inscrito: porEvento.has(evento.id), ahora })}
               />
             ))}

@@ -2,7 +2,7 @@ import { format, startOfDay } from 'date-fns'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { aFechaLocal } from '@/lib/fechas'
 import type { Evento, EventoInput, EventoResumen, UbicacionInput } from '@/types'
-import { ahora, guardarDb, obtenerDb, type EventoDb, type InscripcionDb, type UsuarioDb } from './db'
+import { ahora, guardarDb, imagen, obtenerDb, type EventoDb, type InscripcionDb, type UsuarioDb } from './db'
 import { consumirError } from './simulador'
 
 const TEXTO_ESTADO: Record<number, string> = {
@@ -86,6 +86,7 @@ function aEvento(e: EventoDb): Evento {
     cuposDisponibles: Math.max(0, e.cupo - inscritos),
     estado: e.activo ? 'PROGRAMADO' : 'CANCELADO',
     ubicacion: { id: u.id, nombre: u.nombre, direccion: u.direccion },
+    imagenes: e.imagenes,
   }
 }
 
@@ -260,6 +261,13 @@ export const handlers = [
     }),
   ),
   http.post(
+    url('/imagenes'),
+    ruta(() => {
+      exigirAdmin()
+      return HttpResponse.json({ url: imagen(`subida-${crypto.randomUUID()}`) }, { status: 201 })
+    }),
+  ),
+  http.post(
     url('/eventos'),
     ruta(async ({ request }) => {
       exigirAdmin()
@@ -278,6 +286,7 @@ export const handlers = [
         cupo: i.cupo,
         ubicacionId: i.ubicacionId,
         activo: true,
+        imagenes: i.imagenes,
       }
       db.eventos.push(nuevo)
       return HttpResponse.json(aEvento(nuevo), { status: 201 })
