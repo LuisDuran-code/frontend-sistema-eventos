@@ -34,12 +34,19 @@ export default {
         ring: color('ring'),
       },
       keyframes: {
+        'dato-cambia': {
+          from: { transform: 'translateY(-6px)', opacity: '0' },
+          to: { transform: 'translateY(0)', opacity: '1' },
+        },
         'sello-cae': {
           from: { transform: 'scale(1.4) rotate(-6deg)', opacity: '0' },
           to: { transform: 'scale(1) rotate(-6deg)', opacity: '1' },
         },
       },
-      animation: { 'sello-cae': 'sello-cae 200ms cubic-bezier(0.16, 1, 0.3, 1)' },
+      animation: {
+        'sello-cae': 'sello-cae 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'dato-cambia': 'dato-cambia 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+      },
     },
   },
   plugins: [animate],

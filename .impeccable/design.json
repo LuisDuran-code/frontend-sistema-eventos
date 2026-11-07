@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T12:00:00-06:00",
+  "title": "Design System: Aforo",
+  "extensions": {
+    "colorMeta": {
+      "barra-indigo": { "role": "primary", "displayName": "Barra índigo", "canonical": "hsl(232 56% 35%)", "tonalRamp": ["#121A45", "#1C2668", "#27348B", "#3F4DA8", "#6673C2", "#929CD8", "#BFC6EA", "#E6E9F7"] },
+      "papel-azulado": { "role": "neutral", "displayName": "Papel azulado", "canonical": "#EEF1FA", "tonalRamp": ["#262A36", "#434959", "#646B7E", "#8A91A5", "#AEB5C8", "#CFD5E4", "#E2E6F2", "#EEF1FA"] },
+      "tinta": { "role": "neutral", "displayName": "Tinta", "canonical": "hsl(232 37% 15%)", "tonalRamp": ["#10142A", "#171C33", "#2B3150", "#43485F", "#666C85", "#9196AB", "#C0C4D3", "#E9EBF2"] },
+      "rojo-sello": { "role": "tertiary", "displayName": "Rojo sello", "canonical": "hsl(349 85% 42%)", "tonalRamp": ["#4A0512", "#7A081E", "#A30B28", "#C60D30", "#DE4A66", "#EA8498", "#F4BBC6", "#FBE6EA"] },
+      "verde-propio": { "role": "secondary", "displayName": "Verde propio", "canonical": "hsl(158 83% 26%)", "tonalRamp": ["#032B1D", "#064A32", "#0B7A53", "#2E9872", "#5DB596", "#90D0B9", "#C2E7DA", "#E8F6F1"] }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Título de página", "purpose": "Un h1 por pantalla." },
+      "title": { "displayName": "Título de tarjeta", "purpose": "Nombre del evento en la cartelera." },
+      "body": { "displayName": "Cuerpo", "purpose": "Descripciones y celdas." },
+      "label": { "displayName": "Etiqueta", "purpose": "Etiquetas de formulario y datos de cupos." },
+      "sello": { "displayName": "Sello", "purpose": "Solo dentro del componente Sello." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "sello-cae", "value": "200ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "El sello cae al confirmar una inscripción. Se anula con motion-reduce." },
+      { "name": "dato-cambia", "value": "200ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "El número de cupos restantes cambia en su sitio. Se anula con motion-reduce." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Sello",
+      "kind": "custom",
+      "refersTo": "sello-inscrito",
+      "description": "Estado de un evento estampado sobre su imagen.",
+      "html": "<span class=\"ds-sello\">Inscrito</span>",
+      "css": ".ds-sello { display: inline-block; transform: rotate(-6deg); background: #fff; color: #0b7a53; border: 3px solid currentColor; border-radius: 6px; padding: 6px 12px; font-family: 'Barlow Condensed', Figtree, sans-serif; font-weight: 700; font-size: 24px; line-height: 1; letter-spacing: .06em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "La acción dominante de cada pantalla.",
+      "html": "<button class=\"ds-btn-primary\">Inscribirme</button>",
+      "css": ".ds-btn-primary { background: #27348b; color: #fff; border: 0; border-radius: 6px; padding: 8px 16px; height: 40px; font: 500 14px Figtree, system-ui, sans-serif; cursor: pointer; transition: background .15s; } .ds-btn-primary:hover { background: #1c2668; } .ds-btn-primary:focus-visible { outline: 2px solid #27348b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acciones de fila y salidas.",
+      "html": "<button class=\"ds-btn-outline\">Volver</button>",
+      "css": ".ds-btn-outline { background: #fff; color: #171c33; border: 1px solid #c4cbe1; border-radius: 6px; padding: 8px 16px; height: 40px; font: 500 14px Figtree, system-ui, sans-serif; cursor: pointer; transition: background .15s; } .ds-btn-outline:hover { background: #dfe4f3; } .ds-btn-outline:focus-visible { outline: 2px solid #27348b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Entrada estándar de formularios y filtros.",
+      "html": "<input class=\"ds-input\" placeholder=\"Buscar por título\" />",
+      "css": ".ds-input { background: #fff; color: #171c33; border: 1px solid #a9b3d2; border-radius: 6px; padding: 8px 12px; height: 40px; font: 400 14px Figtree, system-ui, sans-serif; caret-color: #27348b; } .ds-input:focus-visible { outline: 2px solid #27348b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tarjeta de evento",
+      "kind": "card",
+      "refersTo": "event-card",
+      "description": "Entrada de la cartelera. El borde pasa a índigo al pasar el cursor.",
+      "html": "<article class=\"ds-card\"><h2>Taller de cerámica</h2><p>dom 8 nov 2026, 14:00 a 16:00</p><p>Sala Norte</p></article>",
+      "css": ".ds-card { background: #fff; color: #171c33; border: 1px solid #c4cbe1; border-radius: 12px; padding: 16px; font-family: Figtree, system-ui, sans-serif; transition: border-color .15s; } .ds-card:hover { border-color: #27348b; } .ds-card h2 { margin: 0 0 4px; font-size: 20px; font-weight: 800; } .ds-card p { margin: 0; font-size: 14px; color: #43485f; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La mesa de registro",
+    "overview": "Aforo se comporta como la mesa donde alguien revisa una lista y estampa cada entrada. La interfaz es plana, ordenada y discreta, y el único elemento ruidoso es el sello.",
+    "keyCharacteristics": [
+      "Papel azulado y tinta, sin sombras decorativas ni degradados.",
+      "Una sola familia en toda la interfaz; la segunda solo aparece dentro de un sello.",
+      "Los datos cambian en su sitio y los números usan cifras tabulares."
+    ],
+    "rules": [
+      { "name": "La regla del verde reservado", "body": "El verde significa que algo es del usuario. La única excepción es el Badge de cupos que pide CU02, mientras el evento admita inscripción.", "section": "colors" },
+      { "name": "La regla de las cifras tabulares", "body": "Horas, cupos y conteos usan cifras tabulares para no saltar de ancho al cambiar.", "section": "typography" }
+    ],
+    "dos": [
+      "Do estampar el estado con Sello.",
+      "Do mostrar el motivo de todo control deshabilitado en texto visible.",
+      "Do actualizar los datos en su sitio, respetando motion-reduce.",
+      "Do anunciar cupos solo cuando se pueda actuar sobre ellos."
+    ],
+    "donts": [
+      "Don't usar degradados, efecto vidrio ni sombras duras.",
+      "Don't usar Barlow Condensed fuera de un sello.",
+      "Don't poner eyebrows sobre los títulos.",
+      "Don't usar verde para algo que no sea del usuario, salvo el Badge de CU02.",
+      "Don't imitar tinta, textura o relieve en el sello."
+    ]
+  }
+}

@@ -10,7 +10,7 @@
     --card-foreground: 232 37% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 232 37% 15%;
-    --primary: 232 48% 35%;
+    --primary: 232 56% 35%;
     --primary-foreground: 0 0% 100%;
     --secondary: 229 45% 91%;
     --secondary-foreground: 232 37% 15%;
@@ -18,15 +18,15 @@
     --muted-foreground: 232 21% 33%;
     --accent: 229 45% 91%;
     --accent-foreground: 232 37% 15%;
-    --destructive: 349 90% 42%;
+    --destructive: 349 85% 42%;
     --destructive-foreground: 0 0% 100%;
     --success: 158 83% 26%;
     --success-foreground: 0 0% 100%;
-    --shell: 232 48% 35%;
+    --shell: 232 56% 35%;
     --shell-foreground: 0 0% 100%;
     --border: 229 35% 82%;
     --input: 229 35% 72%;
-    --ring: 232 48% 35%;
+    --ring: 232 56% 35%;
     --radius: 0.5rem;
     --sidebar-background: 229 45% 92%;
     color-scheme: light;
@@ -51,7 +51,7 @@
     --destructive-foreground: 232 37% 10%;
     --success: 158 55% 58%;
     --success-foreground: 232 37% 10%;
-    --shell: 232 48% 24%;
+    --shell: 232 56% 24%;
     --shell-foreground: 0 0% 100%;
     --border: 232 25% 26%;
     --input: 232 25% 36%;
@@ -66,6 +66,7 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    caret-color: hsl(var(--primary));
   }
 
   ::selection {

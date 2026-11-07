@@ -1,0 +1,151 @@
+import { useRef, useState } from 'react'
+import { CalendarCheck, CalendarOff } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { toast } from 'sonner'
+import { BotonConMotivo } from '@/components/BotonConMotivo'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { EstadoError } from '@/components/EstadoError'
+import { EstadoVacio } from '@/components/EstadoVacio'
+import { Paginacion } from '@/components/Paginacion'
+import { Sello } from '@/components/Sello'
+import { CABECERA_APILADA, CELDA_APILADA, CUERPO_APILADO, FILA_APILADA, MARCO_TABLA } from '@/components/tablaApilada'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCancelarInscripcion, useMias } from '@/hooks/useInscripciones'
+import { usePaginaValida } from '@/hooks/usePaginaValida'
+import { mensajeError } from '@/lib/api'
+import { formatoHorario } from '@/lib/fechas'
+import { haComenzado, haTerminado } from '@/lib/reglas'
+import type { EstadoInscripcion, EventoResumen, Inscripcion } from '@/types'
+
+// Tras comenzar no se puede volver a inscribir, así que cancelar no tendría vuelta atrás.
+function motivoSinCancelar(e: EventoResumen, ahora: Date): string | null {
+  if (haTerminado(e, ahora)) return 'El evento ya terminó'
+  return haComenzado(e, ahora) ? 'El evento ya comenzó' : null
+}
+
+function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
+  const [page, setPage] = useState(0)
+  const [porCancelar, setPorCancelar] = useState<Inscripcion | null>(null)
+  const consulta = useMias(estado, page)
+  const cancelar = useCancelarInscripcion()
+  const enviando = useRef(false)
+  const activas = estado === 'CONFIRMADA'
+  const reubicando = usePaginaValida(consulta.data, page, setPage)
+
+  function confirmar() {
+    if (!porCancelar || enviando.current) return
+    enviando.current = true
+    cancelar.mutate(porCancelar.id, {
+      onSuccess: () => toast.success('Cancelaste tu asistencia'),
+      onError: (error) => toast.error(mensajeError(error, {}, 'No se pudo cancelar la asistencia')),
+      onSettled: () => {
+        enviando.current = false
+        setPorCancelar(null)
+      },
+    })
+  }
+
+  if (consulta.isPending || reubicando) {
+    return (
+      <div aria-label="Cargando inscripciones" className="space-y-3">
+        <Skeleton className="h-12" />
+        <Skeleton className="h-12" />
+        <Skeleton className="h-12" />
+      </div>
+    )
+  }
+  if (consulta.isError) return <EstadoError error={consulta.error} onRetry={() => consulta.refetch()} />
+  if (consulta.data.content.length === 0) {
+    return activas ? (
+      <EstadoVacio
+        icono={CalendarCheck}
+        titulo="No tienes inscripciones activas"
+        descripcion="Cuando te inscribas en un evento, aparecerá aquí."
+        accion={
+          <Button asChild>
+            <Link to="/eventos">Ver eventos</Link>
+          </Button>
+        }
+      />
+    ) : (
+      <EstadoVacio icono={CalendarOff} titulo="No tienes inscripciones canceladas" />
+    )
+  }
+
+  return (
+    <>
+      <div className={MARCO_TABLA}>
+        <Table>
+          <TableHeader className={CABECERA_APILADA}>
+            <TableRow>
+              <TableHead>Evento</TableHead>
+              <TableHead>Fechas</TableHead>
+              <TableHead>Ubicación</TableHead>
+              <TableHead>Estado</TableHead>
+              {activas && <TableHead><span className="sr-only">Acciones</span></TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody className={CUERPO_APILADO}>
+            {consulta.data.content.map((i) => (
+              <TableRow key={i.id} className={FILA_APILADA}>
+                <TableCell className={`${CELDA_APILADA} font-semibold`}>
+                  <Link to={`/eventos/${i.evento.id}`} className="underline-offset-4 hover:underline">
+                    {i.evento.nombre}
+                  </Link>
+                </TableCell>
+                <TableCell className={CELDA_APILADA}>{formatoHorario(i.evento)}</TableCell>
+                <TableCell className={CELDA_APILADA}>{i.evento.ubicacionNombre}</TableCell>
+                <TableCell className={CELDA_APILADA}>
+                  <Sello plano estado={!activas ? 'Cancelada' : haTerminado(i.evento, new Date()) ? 'Finalizado' : 'Inscrito'} />
+                </TableCell>
+                {activas && (
+                  <TableCell className={`${CELDA_APILADA} md:text-right`}>
+                    <div className="inline-block">
+                      <BotonConMotivo variant="outline" size="sm" motivo={motivoSinCancelar(i.evento, new Date())} onClick={() => setPorCancelar(i)}>
+                        Cancelar asistencia
+                      </BotonConMotivo>
+                    </div>
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <Paginacion page={consulta.data.number} totalPages={consulta.data.totalPages} onChange={setPage} />
+      <ConfirmDialog
+        open={porCancelar !== null}
+        onOpenChange={(abierto) => !abierto && setPorCancelar(null)}
+        titulo="¿Cancelar tu asistencia?"
+        descripcion={`Liberarás tu cupo en ${porCancelar?.evento.nombre ?? 'este evento'}.`}
+        accion="Sí, cancelar"
+        onConfirm={confirmar}
+        pendiente={cancelar.isPending}
+        destructivo
+      />
+    </>
+  )
+}
+
+export function MisInscripcionesPage() {
+  return (
+    <>
+      <h1 className="mb-5 text-4xl font-extrabold tracking-tight">Mis inscripciones</h1>
+      <Tabs defaultValue="activas">
+        <TabsList className="mb-4">
+          <TabsTrigger value="activas">Activas</TabsTrigger>
+          <TabsTrigger value="canceladas">Canceladas</TabsTrigger>
+        </TabsList>
+        <TabsContent value="activas">
+          <TablaInscripciones estado="CONFIRMADA" />
+        </TabsContent>
+        <TabsContent value="canceladas">
+          <TablaInscripciones estado="CANCELADA" />
+        </TabsContent>
+      </Tabs>
+    </>
+  )
+}
