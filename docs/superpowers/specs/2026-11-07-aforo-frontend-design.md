@@ -1,6 +1,6 @@
 # Aforo: frontend del Sistema de Gestión de Eventos
 
-Fecha: 2026-11-07. Estado: pendiente de aprobación.
+Fecha: 2026-11-07. Estado: aprobado por el usuario el 2026-11-07.
 
 ## Intención
 

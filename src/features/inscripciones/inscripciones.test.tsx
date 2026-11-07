@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { obtenerDb } from '@/mocks/db'
 import { server } from '@/mocks/server'
@@ -69,6 +70,28 @@ describe('inscribirse', () => {
     expect(await screen.findByText('2 / 200')).toBeInTheDocument()
     expect(await screen.findByText('Inscrito')).toBeInTheDocument()
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
+  })
+
+  it('anima el número de cupos solo cuando cambia, no sobre el dato viejo', async () => {
+    let retener: Promise<void> | undefined
+    let soltar = () => {}
+    server.use(
+      http.get(`*/api/eventos/${FORO}`, async () => {
+        await retener
+      }),
+    )
+    entrarComo('VISITANTE')
+    renderApp(`/eventos/${FORO}`)
+    await screen.findByText('Quedan 199 cupos')
+    const dialogo = await abrirConfirmacion()
+    retener = new Promise((resolver) => {
+      soltar = resolver
+    })
+    await userEvent.click(within(dialogo).getByRole('button', { name: 'Confirmar inscripción' }))
+    await screen.findByText('Te inscribiste en el evento')
+    expect(screen.getByText('Quedan 199 cupos')).not.toHaveClass('animate-dato-cambia')
+    soltar()
+    expect(await screen.findByText('Quedan 198 cupos')).toHaveClass('animate-dato-cambia')
   })
 
   it('muestra el mensaje del backend en un toast', async () => {

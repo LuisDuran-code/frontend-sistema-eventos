@@ -20,7 +20,7 @@ export function EventoDetallePage() {
   const evento = useEvento(id)
   const ubicacion = useUbicacion(evento.data?.ubicacion.id)
   const { porEvento } = useMisInscripcionesActivas(sesion?.rol === 'VISITANTE')
-  const [recienInscrito, setRecienInscrito] = useState(false)
+  const [cuposAlConfirmar, setCuposAlConfirmar] = useState<number | null>(null)
 
   if (evento.isPending) {
     return (
@@ -51,7 +51,7 @@ export function EventoDetallePage() {
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="relative">
           <ImagenConPlaceholder src={ubicacion.data?.imagenPrincipal} alt={`Imagen de ${e.ubicacion.nombre}`} className="aspect-[16/10] w-full rounded-xl" />
-          {sello && <Sello estado={sello} animar={recienInscrito} className="absolute bottom-4 right-4" />}
+          {sello && <Sello estado={sello} animar={cuposAlConfirmar !== null} className="absolute bottom-4 right-4" />}
         </div>
         <div className="space-y-5">
           <h1 className="text-4xl font-extrabold tracking-tight">{e.nombre}</h1>
@@ -82,12 +82,12 @@ export function EventoDetallePage() {
             </div>
             <Progress value={porcentaje} aria-label="Cupos ocupados" />
             {admiteInscripcion(e, new Date()) && (
-              <p key={n} className={`tabular text-lg font-bold ${recienInscrito ? 'animate-dato-cambia motion-reduce:animate-none' : ''}`}>
+              <p key={n} className={`tabular text-lg font-bold ${cuposAlConfirmar !== null && n !== cuposAlConfirmar ? 'animate-dato-cambia motion-reduce:animate-none' : ''}`}>
                 {restantes}
               </p>
             )}
           </div>
-          <AccionesEvento evento={e} inscrito={Boolean(inscripcion)} onInscrito={() => setRecienInscrito(true)} />
+          <AccionesEvento evento={e} inscrito={Boolean(inscripcion)} onInscrito={() => setCuposAlConfirmar(n)} />
           {e.descripcion && <p className="max-w-prose whitespace-pre-line">{e.descripcion}</p>}
         </div>
       </div>
