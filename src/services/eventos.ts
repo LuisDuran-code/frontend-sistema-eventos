@@ -21,7 +21,8 @@ export const actualizarEvento = (id: number, input: EventoInput) => api.put<Even
 
 export const cancelarEvento = (id: number) => api.del(`/eventos/${id}`)
 
-export const listarInscritos = (id: number, page = 0) => api.get<Page<Inscrito>>(`/eventos/${id}/inscritos`, { page })
+export const listarInscritos = (id: number, page = 0, size?: number) =>
+  api.get<Page<Inscrito>>(`/eventos/${id}/inscritos`, { page, size })
 
 export const agregarInscrito = (eventoId: number, usuarioId: number) =>
   api.post<unknown>(`/eventos/${eventoId}/inscritos`, { usuarioId })

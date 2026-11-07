@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { AsistentesPage } from '@/features/asistentes/AsistentesPage'
 import { ApiCaidaPage } from '@/features/auth/ApiCaidaPage'
 import { useAuth } from '@/features/auth/AuthContext'
 import { LoginPage } from '@/features/auth/LoginPage'
@@ -43,6 +44,7 @@ export function AppRoutes() {
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<RedirigirInicio />} />
               <Route path="eventos" element={<AdminEventosPage />} />
+              <Route path="eventos/:id/asistentes" element={<AsistentesPage />} />
               <Route path="ubicaciones" element={<Pendiente titulo="Ubicaciones" />} />
             </Route>
           </Route>

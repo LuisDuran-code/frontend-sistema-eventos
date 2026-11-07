@@ -47,8 +47,8 @@ export function useCancelarEvento() {
   return useMutation({ mutationFn: (id: number) => cancelarEvento(id), onSuccess: invalidar })
 }
 
-export function useInscritos(id: number, page: number) {
-  return useQuery({ queryKey: claves.inscritos(id, page), queryFn: () => listarInscritos(id, page), placeholderData: keepPreviousData })
+export function useInscritos(id: number, page: number, size?: number) {
+  return useQuery({ queryKey: claves.inscritos(id, page, size), queryFn: () => listarInscritos(id, page, size), placeholderData: keepPreviousData })
 }
 
 export function useAgregarInscrito(eventoId: number) {

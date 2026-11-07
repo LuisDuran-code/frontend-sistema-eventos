@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
+import { toast } from 'sonner'
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/features/auth/AuthContext'
@@ -23,6 +24,7 @@ export function usarServidor() {
     server.resetHandlers()
     reiniciarDb(AHORA)
     simularError(null)
+    toast.dismiss()
   })
 }
 

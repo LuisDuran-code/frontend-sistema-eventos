@@ -6,7 +6,7 @@ export const claves = {
   eventos: ['eventos'] as const,
   listaEventos: (f: FiltrosEventos) => ['eventos', 'lista', f] as const,
   evento: (id: number) => ['eventos', 'detalle', id] as const,
-  inscritos: (id: number, page: number) => ['eventos', 'inscritos', id, page] as const,
+  inscritos: (id: number, page: number, size?: number) => ['eventos', 'inscritos', id, page, size] as const,
   mias: ['mias'] as const,
   listaMias: (estado: EstadoInscripcion, page: number, size: number) => ['mias', estado, page, size] as const,
   ubicaciones: ['ubicaciones'] as const,
