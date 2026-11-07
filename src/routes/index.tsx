@@ -5,6 +5,8 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { ApiCaidaPage } from '@/features/auth/ApiCaidaPage'
 import { useAuth } from '@/features/auth/AuthContext'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { EventoDetallePage } from '@/features/eventos/EventoDetallePage'
+import { EventosPage } from '@/features/eventos/EventosPage'
 import { NotFoundPage } from '@/features/NotFoundPage'
 import { RedirigirInicio, RequireAuth, RequireRole } from './guards'
 
@@ -30,7 +32,8 @@ export function AppRoutes() {
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route index element={<RedirigirInicio />} />
-          <Route path="eventos" element={<Pendiente titulo="Eventos" />} />
+          <Route path="eventos" element={<EventosPage />} />
+          <Route path="eventos/:id" element={<EventoDetallePage />} />
           <Route element={<RequireRole role="VISITANTE" />}>
             <Route path="mis-inscripciones" element={<Pendiente titulo="Mis inscripciones" />} />
           </Route>

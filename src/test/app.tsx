@@ -20,6 +20,7 @@ export function usarServidor() {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(AHORA)
+    server.resetHandlers()
     reiniciarDb(AHORA)
     simularError(null)
   })
@@ -38,7 +39,7 @@ export function renderApp(ruta: string) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[ruta]}>
+      <MemoryRouter initialEntries={[ruta]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
           <AppRoutes />
           <Ruta />
