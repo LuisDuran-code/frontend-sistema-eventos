@@ -9,21 +9,21 @@ describe('fechas', () => {
   })
 
   it('formatea fecha y hora', () => {
-    expect(formatoFechaHora('2026-11-08', '14:00:00')).toBe('sáb 8 nov 2026, 14:00')
+    expect(formatoFechaHora('2026-11-08', '14:00:00')).toBe('dom 8 nov 2026, 14:00')
   })
 
   it('acepta horas sin segundos', () => {
-    expect(formatoFechaHora('2026-11-08', '14:00')).toBe('sáb 8 nov 2026, 14:00')
+    expect(formatoFechaHora('2026-11-08', '14:00')).toBe('dom 8 nov 2026, 14:00')
   })
 
   it('formatea el horario de un evento', () => {
     expect(formatoHorario({ fecha: '2026-11-08', horaInicio: '14:00:00', horaFin: '16:00:00' })).toBe(
-      'sáb 8 nov 2026, 14:00 a 16:00',
+      'dom 8 nov 2026, 14:00 a 16:00',
     )
   })
 
   it('formatea un registro con fecha y hora', () => {
-    expect(formatoRegistro('2026-11-08T09:30:00')).toBe('sáb 8 nov 2026, 09:30')
+    expect(formatoRegistro('2026-11-08T09:30:00')).toBe('dom 8 nov 2026, 09:30')
   })
 
   it('formatea un registro que solo trae hora', () => {
