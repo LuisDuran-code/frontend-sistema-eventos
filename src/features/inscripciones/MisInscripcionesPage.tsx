@@ -7,6 +7,7 @@ import { EstadoError } from '@/components/EstadoError'
 import { EstadoVacio } from '@/components/EstadoVacio'
 import { Paginacion } from '@/components/Paginacion'
 import { Sello } from '@/components/Sello'
+import { CABECERA_APILADA, CELDA_APILADA, CUERPO_APILADO, FILA_APILADA, MARCO_TABLA } from '@/components/tablaApilada'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -15,8 +16,6 @@ import { useCancelarInscripcion, useMias } from '@/hooks/useInscripciones'
 import { mensajeError } from '@/lib/api'
 import { formatoHorario } from '@/lib/fechas'
 import type { EstadoInscripcion, Inscripcion } from '@/types'
-
-const CELDA = 'block px-0 py-1 md:table-cell md:px-2 md:py-3'
 
 function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
   const [page, setPage] = useState(0)
@@ -68,9 +67,9 @@ function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
 
   return (
     <>
-      <div className="rounded-lg border bg-card px-4 md:px-2">
+      <div className={MARCO_TABLA}>
         <Table>
-          <TableHeader className="hidden md:table-header-group">
+          <TableHeader className={CABECERA_APILADA}>
             <TableRow>
               <TableHead>Evento</TableHead>
               <TableHead>Fechas</TableHead>
@@ -79,21 +78,21 @@ function TablaInscripciones({ estado }: { estado: EstadoInscripcion }) {
               {activas && <TableHead><span className="sr-only">Acciones</span></TableHead>}
             </TableRow>
           </TableHeader>
-          <TableBody className="[&_tr:last-child]:border-b-0">
+          <TableBody className={CUERPO_APILADO}>
             {consulta.data.content.map((i) => (
-              <TableRow key={i.id} className="block py-3 md:table-row md:py-0">
-                <TableCell className={`${CELDA} font-semibold`}>
+              <TableRow key={i.id} className={FILA_APILADA}>
+                <TableCell className={`${CELDA_APILADA} font-semibold`}>
                   <Link to={`/eventos/${i.evento.id}`} className="underline-offset-4 hover:underline">
                     {i.evento.nombre}
                   </Link>
                 </TableCell>
-                <TableCell className={CELDA}>{formatoHorario(i.evento)}</TableCell>
-                <TableCell className={CELDA}>{i.evento.ubicacionNombre}</TableCell>
-                <TableCell className={CELDA}>
+                <TableCell className={CELDA_APILADA}>{formatoHorario(i.evento)}</TableCell>
+                <TableCell className={CELDA_APILADA}>{i.evento.ubicacionNombre}</TableCell>
+                <TableCell className={CELDA_APILADA}>
                   <Sello plano estado={activas ? 'Inscrito' : 'Cancelada'} />
                 </TableCell>
                 {activas && (
-                  <TableCell className={`${CELDA} md:text-right`}>
+                  <TableCell className={`${CELDA_APILADA} md:text-right`}>
                     <Button variant="outline" size="sm" onClick={() => setPorCancelar(i)}>
                       Cancelar asistencia
                     </Button>

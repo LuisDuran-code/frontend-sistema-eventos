@@ -35,8 +35,11 @@ export function selloDeEvento(e: Evento, { inscrito, ahora }: Contexto): EstadoS
   return null
 }
 
-export function motivoEdicionBloqueada(e: Evento): string | null {
-  return e.estado === 'CANCELADO' ? 'No se puede editar un evento cancelado' : null
+export function motivoEdicionBloqueada(e: Evento, ahora = new Date()): string | null {
+  if (e.estado === 'CANCELADO') return 'No se puede editar un evento cancelado'
+  // La API exige horario futuro al editar y, con inscritos, no deja cambiarlo.
+  if (e.inscritos > 0 && haComenzado(e, ahora)) return 'Ya comenzó y tiene inscritos'
+  return null
 }
 
 export function aSesion(me: MeResponse): Sesion {

@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { ApiCaidaPage } from '@/features/auth/ApiCaidaPage'
 import { useAuth } from '@/features/auth/AuthContext'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { AdminEventosPage } from '@/features/eventos/AdminEventosPage'
 import { EventoDetallePage } from '@/features/eventos/EventoDetallePage'
 import { EventosPage } from '@/features/eventos/EventosPage'
 import { MisInscripcionesPage } from '@/features/inscripciones/MisInscripcionesPage'
@@ -41,7 +42,7 @@ export function AppRoutes() {
           <Route element={<RequireRole role="ADMIN" />}>
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<RedirigirInicio />} />
-              <Route path="eventos" element={<Pendiente titulo="Eventos" />} />
+              <Route path="eventos" element={<AdminEventosPage />} />
               <Route path="ubicaciones" element={<Pendiente titulo="Ubicaciones" />} />
             </Route>
           </Route>
