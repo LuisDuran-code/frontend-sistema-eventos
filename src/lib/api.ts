@@ -12,6 +12,7 @@ type Params = Record<string, string | number | undefined>
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api'
 const SIN_REDIRECCION = ['/auth/login', '/auth/me']
+const TEXTO_DE_SPRING = /^(Validation failed|JSON parse error|Required |Failed to )/
 
 let redirigiendo = false
 
@@ -42,6 +43,16 @@ function leerJson(texto: string): Record<string, unknown> | null {
   }
 }
 
+function aplanarPagina(json: Record<string, unknown> | null): Record<string, unknown> | null {
+  if (!Array.isArray(json?.content) || typeof json.page !== 'object' || json.page === null) return json
+  return { content: json.content, ...json.page }
+}
+
+function mensajeVisible(status: number, mensaje: unknown): string {
+  if (typeof mensaje !== 'string' || status >= 500 || TEXTO_DE_SPRING.test(mensaje)) return ''
+  return mensaje
+}
+
 async function peticion<T>(metodo: string, path: string, opciones: { params?: Params; body?: unknown } = {}): Promise<T> {
   const headers = new Headers()
   if (opciones.body !== undefined) headers.set('Content-Type', 'application/json')
@@ -65,7 +76,7 @@ async function peticion<T>(metodo: string, path: string, opciones: { params?: Pa
   const texto = await respuesta.text()
   const json = leerJson(texto)
 
-  if (respuesta.ok) return (texto ? (json ?? texto) : undefined) as T
+  if (respuesta.ok) return (texto ? (aplanarPagina(json) ?? texto) : undefined) as T
 
   if (respuesta.status === 401 && !SIN_REDIRECCION.includes(path) && !redirigiendo && location.pathname !== '/login') {
     redirigiendo = true
@@ -75,7 +86,7 @@ async function peticion<T>(metodo: string, path: string, opciones: { params?: Pa
   const pasarela = [502, 503, 504].includes(respuesta.status)
   const proxySinApi = respuesta.status >= 500 && json === null
   const status = pasarela || proxySinApi ? 0 : respuesta.status
-  throw new ApiError(status, typeof json?.message === 'string' ? json.message : '')
+  throw new ApiError(status, mensajeVisible(status, json?.message))
 }
 
 export const api = {
