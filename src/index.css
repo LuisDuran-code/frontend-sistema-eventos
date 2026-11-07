@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 228 56% 96%;
+    --foreground: 232 37% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 232 37% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 232 37% 15%;
+    --primary: 232 48% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 229 45% 91%;
+    --secondary-foreground: 232 37% 15%;
+    --muted: 229 45% 91%;
+    --muted-foreground: 232 21% 33%;
+    --accent: 229 45% 91%;
+    --accent-foreground: 232 37% 15%;
+    --destructive: 349 90% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 158 83% 26%;
+    --success-foreground: 0 0% 100%;
+    --shell: 232 48% 35%;
+    --shell-foreground: 0 0% 100%;
+    --border: 229 35% 82%;
+    --input: 229 35% 72%;
+    --ring: 232 48% 35%;
+    --radius: 0.5rem;
+    --sidebar-background: 229 45% 92%;
+    color-scheme: light;
+  }
+
+  .dark {
+    --background: 232 37% 9%;
+    --foreground: 228 56% 96%;
+    --card: 232 34% 14%;
+    --card-foreground: 228 56% 96%;
+    --popover: 232 34% 14%;
+    --popover-foreground: 228 56% 96%;
+    --primary: 230 80% 80%;
+    --primary-foreground: 232 37% 12%;
+    --secondary: 232 28% 22%;
+    --secondary-foreground: 228 56% 96%;
+    --muted: 232 28% 20%;
+    --muted-foreground: 229 30% 76%;
+    --accent: 232 28% 22%;
+    --accent-foreground: 228 56% 96%;
+    --destructive: 351 85% 72%;
+    --destructive-foreground: 232 37% 10%;
+    --success: 158 55% 58%;
+    --success-foreground: 232 37% 10%;
+    --shell: 232 48% 24%;
+    --shell-foreground: 0 0% 100%;
+    --border: 232 25% 26%;
+    --input: 232 25% 36%;
+    --ring: 230 80% 80%;
+    --sidebar-background: 232 34% 12%;
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  ::selection {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  * {
+    scrollbar-color: hsl(var(--input)) transparent;
+  }
+
+  :focus-visible {
+    outline-color: hsl(var(--ring));
+  }
+
+  table,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
