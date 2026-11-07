@@ -90,11 +90,15 @@ export function UbicacionesPage() {
                   <TableRow key={u.id} className={FILA_APILADA}>
                     <TableCell className={`${CELDA_APILADA} font-semibold`}>{u.nombre}</TableCell>
                     <TableCell className={CELDA_APILADA}>{u.direccion}</TableCell>
-                    <TableCell className={`${CELDA_APILADA} tabular`}>{u.capacidad}</TableCell>
+                    <TableCell className={`${CELDA_APILADA} tabular`}>
+                      <span className="md:hidden">Capacidad: </span>
+                      {u.capacidad}
+                    </TableCell>
                     <TableCell className={CELDA_APILADA}>
                       <Badge variant={u.activo ? 'secondary' : 'outline'}>{u.activo ? 'Activa' : 'Inactiva'}</Badge>
                     </TableCell>
                     <TableCell className={CELDA_APILADA}>
+                      <span className="md:hidden">Eventos: </span>
                       <ConteoEventos ubicacionId={u.id} />
                     </TableCell>
                     <TableCell className={`${CELDA_APILADA} md:text-right`}>
