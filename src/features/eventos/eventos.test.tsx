@@ -24,6 +24,16 @@ describe('cartelera', () => {
     expect(within(tarjeta).getByText('199 cupos')).toBeInTheDocument()
   })
 
+  it('solo anuncia cupos si todavía se puede reservar', async () => {
+    entrarComo('VISITANTE')
+    renderApp('/eventos')
+    const finalizado = (await screen.findByText('Charla de astronomía')).closest('article')!
+    expect(within(finalizado).queryByText('199 cupos')).not.toBeInTheDocument()
+    const enCurso = screen.getByText('Mercado de artesanos').closest('article')!
+    expect(within(enCurso).queryByText('80 cupos')).not.toBeInTheDocument()
+    expect(within(enCurso).getByText('En curso')).toBeInTheDocument()
+  })
+
   it('marca lo que es del usuario y lo que está lleno', async () => {
     entrarComo('VISITANTE')
     renderApp('/eventos')
@@ -82,6 +92,19 @@ describe('cartelera', () => {
 })
 
 describe('detalle', () => {
+  it('dice cuántos cupos quedan solo si se puede reservar', async () => {
+    entrarComo('VISITANTE')
+    renderApp('/eventos/2')
+    expect(await screen.findByText('Quedan 199 cupos')).toBeInTheDocument()
+  })
+
+  it('no anuncia cupos en un evento terminado', async () => {
+    entrarComo('VISITANTE')
+    renderApp('/eventos/8')
+    await screen.findByRole('heading', { level: 1 })
+    expect(screen.queryByText(/Quedan/)).not.toBeInTheDocument()
+  })
+
   it('muestra capacidad, horario y barra de cupos', async () => {
     entrarComo('VISITANTE')
     renderApp('/eventos/1')

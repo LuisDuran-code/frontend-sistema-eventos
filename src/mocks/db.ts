@@ -118,7 +118,7 @@ function sembrar(hoy: Date): Db {
       evento(1, 'Taller de cerámica', 1, '14:00:00', '16:00:00', 30, 2),
       evento(2, 'Foro de empleo joven', 3, '09:00:00', '13:00:00', 200, 1),
       evento(3, 'Noche de cine al aire libre', 7, '19:30:00', '22:00:00', 400, 3),
-      evento(4, 'Feria de ciencias', 8, '10:00:00', '14:00:00', 3, 4),
+      evento(4, 'Feria de ciencias', 1, '10:00:00', '14:00:00', 3, 4),
       evento(5, 'Club de lectura abierto', 11, '17:00:00', '18:30:00', 25, 5),
       evento(6, 'Concierto de cámara', 13, '18:00:00', '20:00:00', 120, 6),
       evento(7, 'Mercado de artesanos', 0, '00:01:00', '23:59:00', 80, 7),

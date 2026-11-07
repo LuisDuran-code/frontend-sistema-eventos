@@ -18,6 +18,10 @@ export function haTerminado(e: TiempoEvento, ahora: Date): boolean {
   return aFechaLocal(e.fecha, e.horaFin) <= ahora
 }
 
+export function admiteInscripcion(e: Evento, ahora: Date): boolean {
+  return e.estado === 'PROGRAMADO' && !haComenzado(e, ahora)
+}
+
 export function motivoBloqueo(e: Evento, { inscrito, ahora }: Contexto): string | null {
   if (e.estado === 'CANCELADO') return 'Este evento fue cancelado'
   if (haTerminado(e, ahora)) return 'El evento ya terminó'

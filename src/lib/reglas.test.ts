@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Evento } from '@/types'
-import { aSesion, haComenzado, haTerminado, motivoBloqueo, motivoEdicionBloqueada, rutaInicial, selloDeEvento } from './reglas'
+import { admiteInscripcion, aSesion, haComenzado, haTerminado, motivoBloqueo, motivoEdicionBloqueada, rutaInicial, selloDeEvento } from './reglas'
 
 const base: Evento = {
   id: 1,
@@ -69,6 +69,14 @@ describe('selloDeEvento', () => {
     expect(selloDeEvento(lleno, { ...c, inscrito: true })).toBe('Inscrito')
     expect(selloDeEvento(lleno, { inscrito: true, ahora: despues })).toBe('Finalizado')
     expect(selloDeEvento({ ...lleno, estado: 'CANCELADO' }, { inscrito: true, ahora: despues })).toBe('Cancelado')
+  })
+})
+
+describe('admiteInscripcion', () => {
+  it('solo admite eventos programados que no han comenzado', () => {
+    expect(admiteInscripcion({ ...base, fecha: '2999-01-01' }, new Date())).toBe(true)
+    expect(admiteInscripcion({ ...base, fecha: '2020-01-01' }, new Date())).toBe(false)
+    expect(admiteInscripcion({ ...base, fecha: '2999-01-01', estado: 'CANCELADO' }, new Date())).toBe(false)
   })
 })
 

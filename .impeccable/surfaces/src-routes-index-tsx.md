@@ -15,7 +15,7 @@ Momento memorable: el sello "Inscrito" cae sobre el evento al confirmar la inscr
 
 THESIS: Cada estado de un evento se estampa como en una mesa de registro. Rechaza la rejilla shadcn neutra con Badges pastel, donde ningún estado se distingue de otro.
 
-OWN-WORLD: Barra índigo #27348B plana, fondo papel azulado #EEF1FA, tinta #171B33, rojo sello #C8102E, verde #0B7A53 reservado a lo que es del usuario. Figtree en toda la interfaz; Barlow Condensed solo dentro de sellos. Controles shadcn estándar.
+OWN-WORLD: Barra índigo #27348B plana, fondo papel azulado #EEF1FA, tinta #171B33, rojo sello #C8102E, verde #0B7A53 reservado a lo que es del usuario, salvo el Badge de cupos que pide CU02. Figtree en toda la interfaz; Barlow Condensed solo dentro de sellos. Controles shadcn estándar.
 
 STORY: El visitante ve qué hay, qué queda y qué ya es suyo; entiende por qué algo no se puede hacer y actúa. El administrador opera tablas densas con las mismas señales.
 

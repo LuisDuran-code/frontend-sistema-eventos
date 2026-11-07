@@ -12,7 +12,7 @@ import { useEvento } from '@/hooks/useEventos'
 import { useMisInscripcionesActivas } from '@/hooks/useInscripciones'
 import { useUbicacion } from '@/hooks/useUbicaciones'
 import { formatoHorario } from '@/lib/fechas'
-import { selloDeEvento } from '@/lib/reglas'
+import { admiteInscripcion, selloDeEvento } from '@/lib/reglas'
 
 export function EventoDetallePage() {
   const id = Number(useParams().id)
@@ -38,6 +38,9 @@ export function EventoDetallePage() {
   const inscripcion = porEvento.get(e.id)
   const sello = selloDeEvento(e, { inscrito: Boolean(inscripcion), ahora: new Date() })
   const porcentaje = e.cupo > 0 ? Math.round((e.inscritos / e.cupo) * 100) : 0
+
+  const n = e.cuposDisponibles
+  const restantes = n === 0 ? 'Sin cupos' : n === 1 ? 'Queda 1 cupo' : `Quedan ${n} cupos`
 
   return (
     <>
@@ -78,6 +81,11 @@ export function EventoDetallePage() {
               </span>
             </div>
             <Progress value={porcentaje} aria-label="Cupos ocupados" />
+            {admiteInscripcion(e, new Date()) && (
+              <p key={n} className={`tabular text-lg font-bold ${recienInscrito ? 'animate-dato-cambia motion-reduce:animate-none' : ''}`}>
+                {restantes}
+              </p>
+            )}
           </div>
           <AccionesEvento evento={e} inscrito={Boolean(inscripcion)} onInscrito={() => setRecienInscrito(true)} />
           {e.descripcion && <p className="max-w-prose whitespace-pre-line">{e.descripcion}</p>}
