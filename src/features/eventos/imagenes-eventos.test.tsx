@@ -112,3 +112,28 @@ describe('el visitante', () => {
     expect(screen.queryByRole('button', { name: 'Agregar imágenes' })).not.toBeInTheDocument()
   })
 })
+
+describe('galería del lugar', () => {
+  const ubicacionDe = (id: number) => obtenerDb().ubicaciones.find((u) => u.id === evento(id).ubicacionId)!
+
+  it('muestra las imágenes de la ubicación', async () => {
+    const u = ubicacionDe(FORO)
+    u.imagenPrincipal = PROPIA_1
+    u.imagenes = [PROPIA_2]
+    entrarComo('VISITANTE')
+    renderApp(`/eventos/${FORO}`)
+    const seccion = (await screen.findByRole('heading', { name: 'Galería del lugar' })).closest('section')!
+    expect(within(seccion).getByRole('img', { name: `Foto 1 de ${u.nombre}` })).toHaveAttribute('src', PROPIA_1)
+    expect(within(seccion).getByRole('img', { name: `Foto 2 de ${u.nombre}` })).toHaveAttribute('src', PROPIA_2)
+  })
+
+  it('sin imágenes de la ubicación no muestra nada', async () => {
+    const u = ubicacionDe(FORO)
+    u.imagenPrincipal = null
+    u.imagenes = []
+    entrarComo('VISITANTE')
+    renderApp(`/eventos/${FORO}`)
+    await screen.findByRole('button', { name: 'Inscribirme' })
+    expect(screen.queryByRole('heading', { name: 'Galería del lugar' })).not.toBeInTheDocument()
+  })
+})
