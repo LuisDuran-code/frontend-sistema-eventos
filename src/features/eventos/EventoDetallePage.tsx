@@ -13,6 +13,7 @@ import { useUbicacion } from '@/hooks/useUbicaciones'
 import { formatoHorario } from '@/lib/fechas'
 import { admiteInscripcion, selloDeEvento } from '@/lib/reglas'
 import { GaleriaEvento } from './GaleriaEvento'
+import { GaleriaUbicacion } from './GaleriaUbicacion'
 
 export function EventoDetallePage() {
   const id = Number(useParams().id)
@@ -44,6 +45,7 @@ export function EventoDetallePage() {
 
   const principalUbicacion = ubicacion.data?.imagenPrincipal
   const imagenes = e.imagenes.length > 0 ? e.imagenes : principalUbicacion ? [principalUbicacion] : []
+  const imagenesUbicacion = [...new Set([principalUbicacion, ...(ubicacion.data?.imagenes ?? [])].filter((url): url is string => Boolean(url)))]
 
   return (
     <>
@@ -93,6 +95,7 @@ export function EventoDetallePage() {
           {e.descripcion && <p className="max-w-prose whitespace-pre-line">{e.descripcion}</p>}
         </div>
       </div>
+      <GaleriaUbicacion imagenes={imagenesUbicacion} nombre={e.ubicacion.nombre} />
     </>
   )
 }
